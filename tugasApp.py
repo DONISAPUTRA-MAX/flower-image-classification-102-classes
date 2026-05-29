@@ -4,6 +4,8 @@ import numpy as np
 from PIL import Image
 # LIBRARY ATAU ENGINE UNTUK MENJALANKAN MODEL
 from ai_edge_litert.interpreter import Interpreter
+import gdown
+import os
 
 #DIGUNAKAN UNTUK JUDUL H1
 st.title("FLOWER IMAGE CLASSIFICATION")
@@ -57,9 +59,31 @@ for flower in class_names:
 # MEMBUAT FUNGSI LOAD MODEL
 # @st.cache_resource DIGUNAKAN UNTUK MENYIMPAN HASIL FUNGSI (INTERPRETER) DI MEMORY CACHE
 
+MODEL_PATH = "model_efficientnet_bunga.tflite"
+
+FILE_ID = "1ueifMf0aGzXhcKgngn7wYK8rH8ZtxuTX"
+
+MODEL_URL = (
+    f"https://drive.google.com/uc?id={FILE_ID}"
+)
+
 @st.cache_resource
 def load_model():
-    interpreter = Interpreter(model_path="X:\JBI\S4\Machine Learning\PERCOBAAN_MODUL_STREAMLIT\MODEL\model_efficientnet_bunga.tflite")
+
+    if not os.path.exists(MODEL_PATH):
+        with st.spinner(
+            "Downloading model, please wait..."
+        ):
+            gdown.download(
+                MODEL_URL,
+                MODEL_PATH,
+                quiet=False
+            )
+
+    interpreter = Interpreter(
+        model_path=MODEL_PATH
+    )
+
     return interpreter
 
 # MEMANGGIL FUNGSI LOAD MODEL
